@@ -1,6 +1,6 @@
 import { profitStyles } from "../constants";
 
-export const ProfitBadge = ({ value }) => {
+export const ProfitBadge = ({ value, selectedCurrency }) => {
     const styles = value > 0 ? profitStyles.positive : profitStyles.negative;
 
     return (
@@ -12,8 +12,18 @@ export const ProfitBadge = ({ value }) => {
                     value > 0 ? "bg-green-500" : "bg-red-500"
                 }`}
             ></div>
-            <span className={`text-[12px] font-medium ${styles.textColor}`}>
-                {value.toFixed(2)} USD
+            <span className={`text-[14px] font-medium ${styles.textColor}`}>
+                {value.toLocaleString(
+                    selectedCurrency === "primaryCurrency" ? "en-US" : "tr-TR",
+                    {
+                        style: "currency",
+                        currency:
+                            selectedCurrency === "primaryCurrency"
+                                ? "USD"
+                                : "TRY",
+                        maximumFractionDigits: 2,
+                    }
+                )}
             </span>
         </div>
     );

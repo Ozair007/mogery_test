@@ -20,6 +20,8 @@ exports.getAllOrders = () => {
                 productName: product.product_name,
                 invoiceNumber: order.invoice_number,
                 totalQuantity: product.quantity,
+                primaryRate: product.stocklogs[0].primary_rate,
+                secondaryRate: product.stocklogs[0].secondary_rate,
                 totalCost: costCalculator(product.stocklogs[0]),
                 attributes: product.attributes,
                 totalAmount: product.total_price * order.primary_rate,
@@ -50,6 +52,8 @@ exports.getAllOrders = () => {
             return {
                 customer: JSON.parse(order.customer).companyname,
                 invoiceNumber: order.invoice_number,
+                primaryRate: order.primary_rate,
+                secondaryRate: order.secondary_rate,
                 totalQuantity,
                 totalCost,
                 totalAmount,

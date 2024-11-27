@@ -6,18 +6,35 @@ export function cn(...inputs) {
 }
 
 /**
- * Converts a number into USD format by dividing it by 1000.
- * @param {number} value - The number to be converted.
- * @returns {string} - Formatted USD string.
+ * Formats the given value as currency. If selectedCurrency is "primaryCurrency",
+ * it is formatted as USD. Otherwise, it is formatted as TRY.
+ * @param {number} value
+ * @param {number} primaryRate
+ * @param {number} secondaryRate
+ * @param {"primaryCurrency" | "secondaryCurrency"} selectedCurrency
+ * @returns {string}
  */
-export const formatToUSD = (value) => {
-    if (typeof value !== "number") {
-        throw new TypeError("Value must be a number");
-    }
+
+export const formatCurrency = (value, secondaryRate, selectedCurrency) => {
     const convertedValue = value / 1000;
-    return convertedValue.toLocaleString("en-US", {
-        style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 5,
+    if (selectedCurrency === "primaryCurrency") {
+        return convertedValue.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+            maximumFractionDigits: 5,
+        });
+    } else {
+        return (convertedValue * secondaryRate).toLocaleString("tr-TR", {
+            style: "currency",
+            currency: "TRY",
+            maximumFractionDigits: 5,
+        });
+    }
+};
+
+export const formatQuantity = (value) => {
+    return value.toLocaleString("tr-TR", {
+        minimumFractionDigits: 4,
+        maximumFractionDigits: 4,
     });
 };

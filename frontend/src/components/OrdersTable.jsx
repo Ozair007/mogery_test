@@ -8,22 +8,19 @@ import {
     TableHead,
     TableRow,
 } from "@/components/ui/table";
-import { formatToUSD } from "../lib/utils";
+import { formatCurrency, formatQuantity } from "../lib/utils";
 import ProductDialog from "./ProductDialog";
 import { ProfitBadge } from "./ProfitBadge";
 import { FilterDropdown } from "./FilterDropdown";
 import Loader from "./Loader";
+import { currencyOptions, filterOptions } from "../constants";
 
 const OrdersList = () => {
     const { data: allData = {}, error, isLoading } = useGetOrdersQuery();
     const [selected, setSelected] = useState("orders");
+    const [selectedCurrency, setSelectedCurrency] = useState("primaryCurrency");
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-    const options = [
-        { value: "orders", label: "By Orders" },
-        { value: "products", label: "By Products" },
-    ];
 
     if (isLoading)
         return (
@@ -41,12 +38,19 @@ const OrdersList = () => {
 
     return (
         <div className="p-5">
-            {/* Dropdown Menu */}
-            <div className="flex items-center mb-5">
+            <div className="flex justify-between items-center mb-5">
+                {/* Dropdown Menu */}
                 <FilterDropdown
-                    options={options}
+                    options={filterOptions}
                     selected={selected}
                     setSelected={setSelected}
+                />
+
+                {/* Filter Dropdown for Currency */}
+                <FilterDropdown
+                    options={currencyOptions}
+                    selected={selectedCurrency}
+                    setSelected={setSelectedCurrency}
                 />
             </div>
             {/* Table */}
@@ -94,17 +98,35 @@ const OrdersList = () => {
                                     <TableCell className="px-4 py-2 w-[150px]">
                                         {data.invoiceNumber}
                                     </TableCell>
-                                    <TableCell className="px-4 py-2 w-[120px]">
-                                        {data.totalQuantity}&nbsp;USD
+                                    <TableCell className="px-4 py-2 text-base w-[120px]">
+                                        {formatQuantity(data.totalQuantity)}
+                                        &nbsp;ton
                                     </TableCell>
                                     <TableCell className="px-4 py-2 text-base w-[150px]">
-                                        {formatToUSD(data.totalAmount)}
+                                        {formatCurrency(
+                                            data.totalAmount,
+                                            data.secondaryRate,
+                                            selectedCurrency
+                                        )}
                                     </TableCell>
                                     <TableCell className="px-4 py-2 text-base w-[120px]">
-                                        {formatToUSD(data.totalCost)}
+                                        {formatCurrency(
+                                            data.totalCost,
+                                            data.secondaryRate,
+                                            selectedCurrency
+                                        )}
                                     </TableCell>
                                     <TableCell className="flex items-center px-4 py-2 w-[150px]">
-                                        <ProfitBadge value={data.totalProfit} />
+                                        <ProfitBadge
+                                            value={
+                                                selectedCurrency ===
+                                                "primaryCurrency"
+                                                    ? data.totalProfit
+                                                    : data.totalProfit *
+                                                      data.secondaryRate
+                                            }
+                                            selectedCurrency={selectedCurrency}
+                                        />
                                     </TableCell>
                                 </TableRow>
                             ))
