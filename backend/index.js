@@ -1,13 +1,13 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const orderRoutes = require('./routes/orderRoutes');
+const orderRoutes = require('./routes/order.routes');
 
 
 const app = express();
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // Replace with your frontend's URL
+  origin: 'http://localhost:5173',
   methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
   credentials: true,
   optionsSuccessStatus: 204,
@@ -18,10 +18,10 @@ app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Route to fetch orders
-app.get('/api/orders', orderRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Error handling middleware
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ message: 'Internal Server Error' });
 });

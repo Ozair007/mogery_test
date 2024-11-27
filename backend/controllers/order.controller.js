@@ -1,11 +1,12 @@
-const fs = require('fs');
+const { getAllOrders } = require("../services/order.services");
 
-export const getOrders = (req, res) => {
-	fs.readFile('./orders.json', 'utf8', (err, data) => {
-	  if (err) {
-		return res.status(500).json({ message: 'Error reading orders file' });
-	  }
-	  const orders = JSON.parse(data).orders;
-	  res.json(orders);
-	});
-  }
+exports.getOrders = (req, res) => {
+    try {
+        const processedData = getAllOrders();
+
+        res.json(processedData);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
