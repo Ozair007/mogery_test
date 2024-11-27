@@ -22,14 +22,14 @@ const OrdersList = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
+    const dataToShow = [...(allData[selected] || [])];
+
     if (isLoading)
         return (
             <div className="flex justify-center my-10">
                 <Loader />
             </div>
         );
-
-    const dataToShow = [...(allData[selected] || [])];
 
     const handleProductClick = (product) => {
         setSelectedProduct(product);
@@ -39,14 +39,14 @@ const OrdersList = () => {
     return (
         <div className="p-5">
             <div className="flex justify-between items-center mb-5">
-                {/* Dropdown Menu */}
+                {/* Dropdown for Orders or Products */}
                 <FilterDropdown
                     options={filterOptions}
                     selected={selected}
                     setSelected={setSelected}
                 />
 
-                {/* Filter Dropdown for Currency */}
+                {/* Dropdown for Currency */}
                 <FilterDropdown
                     options={currencyOptions}
                     selected={selectedCurrency}
@@ -60,7 +60,7 @@ const OrdersList = () => {
                     <TableHeader className="bg-gray-200">
                         <TableRow>
                             <TableHead className="px-4 py-2 text-sm text-gray-700 font-semibold w-[200px] block">
-                                Customer / Product
+                                {selected === "orders" ? "Customer" : "Product"}
                             </TableHead>
                             <TableHead className="px-4 py-2 text-gray-700 font-semibold w-[150px]">
                                 Invoice Number
@@ -147,7 +147,7 @@ const OrdersList = () => {
                     </TableBody>
                 </Table>
             </div>
-            {/* Dialog */}
+            {/* Product's attributes Dialog */}
             {selected === "products" && selectedProduct && (
                 <ProductDialog
                     isDialogOpen={isDialogOpen}
